@@ -13,19 +13,22 @@ export default class AuthManager extends cc.Component {
     passwordInput: cc.EditBox = null;
 
     public onClickEnter() {
+        cc.log("[Auth] ENTER 被按到");
+
         let email = this.emailInput.string;
         let username = this.usernameInput.string;
         let password = this.passwordInput.string;
 
-        cc.log("email:", email);
-        cc.log("username:", username);
-        cc.log("password:", password);
+        cc.log("[Auth] email:", email);
+        cc.log("[Auth] username:", username);
+        cc.log("[Auth] password length:", password.length);
 
-        if (email === "" || username === "" || password === "") {
-            cc.log("請填完整資料");
+        if (email === "" || password === "") {
+            cc.log("[Auth] email 或 password 是空的");
             return;
         }
 
-        cc.log("準備註冊 / 登入 Firebase");
+        cc.log("[Auth] 準備進入 LevelSelect");
+        cc.director.loadScene("LevelSelect");
     }
 }
