@@ -3962,6 +3962,11 @@
     "player": {
       "__id__": 6
     },
+    "tileMap": {
+      "__id__": 42
+    },
+    "layerName": "圖塊層 1",
+    "usedGID": 166,
     "_id": "e6hrR2kIZKAYbF73QjtwsS"
   },
   {

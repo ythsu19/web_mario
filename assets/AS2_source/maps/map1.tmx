@@ -2,6 +2,26 @@
 <map version="1.10" tiledversion="1.12.1" orientation="orthogonal" renderorder="right-down" width="100" height="50" tilewidth="16" tileheight="16" infinite="0" backgroundcolor="#1fb4d2" nextlayerid="5" nextobjectid="1">
  <tileset firstgid="1" name="tileset" tilewidth="16" tileheight="16" tilecount="1204" columns="43">
   <image source="tileset.png" width="688" height="450"/>
+  <tile id="122">
+   <properties>
+    <property name="targetUID" type="int" value="252"/>
+   </properties>
+  </tile>
+  <tile id="123">
+   <properties>
+    <property name="targetUID" type="int" value="252"/>
+   </properties>
+  </tile>
+  <tile id="165">
+   <properties>
+    <property name="targetUID" type="int" value="252"/>
+   </properties>
+  </tile>
+  <tile id="166">
+   <properties>
+    <property name="targetUID" type="int" value="252"/>
+   </properties>
+  </tile>
  </tileset>
  <layer id="4" name="圖塊層 2" width="100" height="50" locked="1" opacity="0.9" tintcolor="#32a3ef">
   <data encoding="csv">
