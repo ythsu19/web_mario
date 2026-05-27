@@ -230,25 +230,29 @@ export default class Player extends cc.Component {
 
         if (otherCollider.node.name === "Enemy") {
 
-            cc.log("[contact] 碰到 Enemy");
+        cc.log("[contact] 碰到 Enemy");
 
-            if (this.node.y > otherCollider.node.y + 15) {
+        if (this.node.y > otherCollider.node.y + 15) {
 
-                this.uiManager.addScore(100);
+            this.uiManager.addScore(100);
 
-                otherCollider.node.destroy();
+            let enemy = otherCollider.node.getComponent("Enemy");
 
-                let velocity = this.rb.linearVelocity;
-                velocity.y = this.jumpForce * 0.7;
-                this.rb.linearVelocity = velocity;
-
-                this.canJump = false;
+            if (enemy) {
+                enemy.die();
             }
-            else {
-                cc.log("[contact] 從側邊碰到敵人，準備扣血");
-                this.takeDamage();
-            }
+
+            let velocity = this.rb.linearVelocity;
+            velocity.y = this.jumpForce * 0.7;
+            this.rb.linearVelocity = velocity;
+
+            this.canJump = false;
         }
+        else {
+            cc.log("[contact] 從側邊碰到敵人，準備扣血");
+            this.takeDamage();
+        }
+    }
 
         if (otherCollider.node.name === "QuestionBlock2") {
 
@@ -259,6 +263,9 @@ export default class Player extends cc.Component {
 
                 cc.log("撞到問號磚，加 500 分");
             }
+        }
+        if (otherCollider.node.name === "Flag") {
+            cc.director.loadScene("LevelSelect");
         }
     }
 }

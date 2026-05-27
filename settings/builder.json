@@ -7,7 +7,7 @@
     "upsideDown": false
   },
   "packageName": "org.cocos2d.helloworld",
-  "startScene": "f3e8c585-813c-479d-b96f-15873beaf5fb",
+  "startScene": "cd5dea3b-f3c1-4071-ae90-897c7d13112a",
   "title": "hello_world",
   "webOrientation": "auto",
   "inlineSpriteFrames": true,
