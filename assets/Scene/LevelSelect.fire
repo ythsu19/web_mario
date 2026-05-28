@@ -1175,6 +1175,14 @@
       "__id__": 2
     },
     "_enabled": true,
+    "bgm": {
+      "__uuid__": "bf5a66b7-7558-4340-ad3b-cc9e36eded1d"
+    },
+    "buttonSfx": {
+      "__uuid__": "e9ad43ca-9e01-4a28-90c9-e42d844e2233"
+    },
+    "bgmVolume": 0.6,
+    "sfxVolume": 1,
     "_id": "d0H6tQtflFr4ka3ZvRelR7"
   }
 ]

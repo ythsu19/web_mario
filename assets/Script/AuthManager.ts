@@ -78,6 +78,7 @@ export default class AuthManager extends cc.Component {
                 }
             })
             .then(() => {
+                this.saveCurrentUsername(username);
                 this.showMessage(this.mode === "signup" ? "Account created" : "Login success");
                 cc.director.loadScene("LevelSelect");
             })
@@ -147,6 +148,14 @@ export default class AuthManager extends cc.Component {
 
     private normalizeUsername(username: string): string {
         return (username || "").trim().toLowerCase();
+    }
+
+    private saveCurrentUsername(username: string) {
+        try {
+            window.localStorage.setItem("webMarioCurrentUsername", username.trim());
+        } catch (e) {
+            cc.log("[Auth] save username failed", e);
+        }
     }
 
     private showMessage(msg: string) {

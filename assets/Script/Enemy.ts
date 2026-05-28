@@ -18,6 +18,11 @@ export default class Enemy extends cc.Component {
     @property
     deadDuration: number = 0.8;
 
+    @property(cc.Node)
+    uiManagerNode: cc.Node = null;
+
+    private uiManager: any = null;
+
     private rb: cc.RigidBody = null;
     private dir: number = -1;
     private dead: boolean = false;
@@ -26,6 +31,10 @@ export default class Enemy extends cc.Component {
     onLoad() {
         this.rb = this.getComponent(cc.RigidBody);
         this.anim = this.getComponent(cc.Animation);
+
+        if (this.uiManagerNode) {
+            this.uiManager = this.uiManagerNode.getComponent("UIManager");
+        }
     }
 
     start() {
@@ -57,43 +66,39 @@ export default class Enemy extends cc.Component {
         this.node.scaleX = this.dir;
     }
 
-    public die() {
-        if (this.dead) return;
+    public die(): boolean {
+        if (this.dead) return false;
         this.dead = true;
 
         cc.log("[Enemy] die");
 
-        // 停止飛行動畫
         if (this.anim) {
             this.anim.stop();
         }
 
-        // 停止物理移動
         if (this.rb) {
             this.rb.linearVelocity = cc.v2(0, 0);
             this.rb.gravityScale = 0;
         }
 
-        // 關掉碰撞，避免重複踩到
         let collider = this.getComponent(cc.PhysicsBoxCollider);
         if (collider) {
             collider.enabled = false;
         }
 
-        // 換成屍體圖片
         let sprite = this.getComponent(cc.Sprite);
         if (sprite && this.deadFrame) {
             sprite.spriteFrame = this.deadFrame;
         }
 
-        // 屍體往下掉一段距離，然後消失
         cc.tween(this.node)
             .by(1, { y: -200 })
             .delay(0.3)
             .call(() => {
-                cc.log("[Enemy] destroy");
                 this.node.destroy();
             })
             .start();
+
+        return true;
     }
 }

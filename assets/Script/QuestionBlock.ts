@@ -9,7 +9,7 @@ export default class QuestionBlock extends cc.Component {
     mushroom: cc.Node = null;
 
     @property
-    mushroomSpeed: number = -120;
+    mushroomSpeed: number = -100;
 
     @property(cc.Node)
     player: cc.Node = null;
@@ -22,6 +22,15 @@ export default class QuestionBlock extends cc.Component {
 
     @property
     usedGID: number = 252; // 這裡填你想變成的方塊 GID
+
+    @property(cc.AudioClip)
+    powerUpAppearSfx: cc.AudioClip = null;
+
+    @property(cc.AudioClip)
+    powerUpSfx: cc.AudioClip = null;
+
+    @property
+    sfxVolume: number = 1;
 
     private used: boolean = false;
     private mushroomMoving: boolean = false;
@@ -43,13 +52,12 @@ export default class QuestionBlock extends cc.Component {
             return;
         }
 
-        // 判斷是不是從下面撞
-        if (otherCollider.node.y >= this.node.y) {
-            cc.log("不是從下面撞，return");
+        if (!this.isHitFromBottom(contact, selfCollider, otherCollider)) {
+            cc.log("不是從問號下緣撞，return");
             return;
         }
 
-        cc.log("成功從下面撞問號");
+        cc.log("成功從問號下緣撞");
 
         this.used = true;
 
@@ -127,6 +135,58 @@ export default class QuestionBlock extends cc.Component {
         return this.node.convertToWorldSpaceAR(offset);
     }
 
+    private isHitFromBottom(contact: cc.PhysicsContact, selfCollider: cc.PhysicsCollider, otherCollider: cc.PhysicsCollider): boolean {
+        let bounds = this.getBoxWorldBounds(selfCollider);
+        if (!bounds) return false;
+
+        let playerCenter = otherCollider.node.convertToWorldSpaceAR(cc.v2(0, 0));
+        let playerTop = otherCollider.node.convertToWorldSpaceAR(
+            cc.v2(0, otherCollider.node.height * Math.abs(otherCollider.node.scaleY) / 2)
+        );
+
+        let centerUnderBlock = playerCenter.y < bounds.bottom;
+        let centerInsideBlockWidth = playerCenter.x >= bounds.left + 2 && playerCenter.x <= bounds.right - 2;
+        let headTouchesBottom = playerTop.y >= bounds.bottom - 10 && playerTop.y <= bounds.bottom + 14;
+
+        if (centerUnderBlock && centerInsideBlockWidth && headTouchesBottom) {
+            return true;
+        }
+
+        let worldManifold = contact.getWorldManifold();
+        if (!worldManifold) return false;
+
+        let points = worldManifold.points || [];
+        for (let i = 0; i < points.length; i++) {
+            let point = points[i];
+            let hitBottomY = point.y >= bounds.bottom - 10 && point.y <= bounds.bottom + 10;
+            let hitInsideX = point.x >= bounds.left - 2 && point.x <= bounds.right + 2;
+
+            if (centerUnderBlock && hitBottomY && hitInsideX) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private getBoxWorldBounds(collider: cc.PhysicsCollider): any {
+        let box: any = collider;
+        let offset = box.offset || box._offset || cc.v2(0, 0);
+        let size = box.size || box._size || cc.size(this.node.width, this.node.height);
+        if (!size) return null;
+
+        let center = collider.node.convertToWorldSpaceAR(offset);
+        let halfWidth = size.width * Math.abs(collider.node.scaleX) / 2;
+        let halfHeight = size.height * Math.abs(collider.node.scaleY) / 2;
+
+        return {
+            left: center.x - halfWidth,
+            right: center.x + halfWidth,
+            bottom: center.y - halfHeight,
+            top: center.y + halfHeight
+        };
+    }
+
     private findNearestQuestionTile(layer: cc.TiledLayer, startX: number, startY: number, mapSize: cc.Size): any {
         let best = null;
         let bestDistance = Number.MAX_VALUE;
@@ -177,6 +237,7 @@ export default class QuestionBlock extends cc.Component {
         this.mushroomRb.linearVelocity = cc.v2(0, 0);
 
         let startY = this.mushroom.y;
+        this.playSfx(this.powerUpAppearSfx);
 
         cc.tween(this.mushroom)
             .to(0.4, { y: startY + 32 })
@@ -209,13 +270,30 @@ export default class QuestionBlock extends cc.Component {
                 let playerScript = this.player.getComponent(Player);
 
                 if (playerScript) {
+
                     playerScript.becomeBig();
-                    cc.log("Player becomeBig, isBig =", playerScript.isBig);
+
+                    // 播放吃蘑菇音效
+                    playerScript["playSfx"](playerScript.powerUpSfx);
+
+                    playerScript["uiManager"].addScore(1000);
+
+                    playerScript.showScoreImage(
+                        1000,
+                        this.mushroom.convertToWorldSpaceAR(cc.v2(0, 0))
+                    );
                 }
 
                 this.mushroom.active = false;
                 this.mushroomMoving = false;
             }
         }
+    }
+
+    private playSfx(clip: cc.AudioClip) {
+        if (!clip) return;
+
+        let audioId = cc.audioEngine.playEffect(clip, false);
+        cc.audioEngine.setVolume(audioId, this.sfxVolume);
     }
 }

@@ -14,7 +14,14 @@ export default class Flag extends cc.Component {
             this.triggered = true;
             cc.log("碰到旗子，準備進 LevelSelect");
 
-            cc.director.loadScene("LevelSelect");
+            let playerScript: any = otherCollider.node.getComponent("Player");
+
+            if (playerScript && playerScript.startLevelClear) {
+                playerScript.startLevelClear();
+            }
+            else {
+                cc.director.loadScene("LevelSelect");
+            }
         }
     }
 }

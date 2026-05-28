@@ -940,6 +940,14 @@
         "__id__": 8
       }
     ],
+    "bgm": {
+      "__uuid__": "0dfc101a-2ab3-46c7-8bf1-25364d6c7d72"
+    },
+    "buttonSfx": {
+      "__uuid__": "e9ad43ca-9e01-4a28-90c9-e42d844e2233"
+    },
+    "bgmVolume": 0.6,
+    "sfxVolume": 1,
     "_id": "392TPiPL5PbZ/f8FNLUA2D"
   },
   {
